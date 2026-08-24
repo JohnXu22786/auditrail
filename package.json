@@ -1,0 +1,70 @@
+{
+  "name": "dsh-audit-trail",
+  "version": "0.1.0",
+  "description": "Security auditing and session forensics for DeepSeek Harness (dsh): full tool-invocation-chain recording (who/what/files/status/duration) from the session/event stream and tool-dispatch hook, high-risk pattern flagging, SQLite (WAL) persistence with privacy masking, filter/query with JSON/Markdown/JSONL exports, plain-text session replay, and an audit policy tool-set plus a standalone CLI.",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "audit",
+    "forensics",
+    "security",
+    "tool-call",
+    "sqlite",
+    "compliance",
+    "replay"
+  ],
+  "license": "MIT",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./cli": {
+      "types": "./lib/cli.d.ts",
+      "default": "./lib/cli.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "auditrail": "./bin/auditrail.mjs"
+  },
+  "files": [
+    "lib",
+    "bin",
+    "examples",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "pretest": "npm run build",
+    "test": "node --test test/*.test.ts",
+    "cli": "node bin/auditrail.mjs",
+    "prepublishOnly": "npm run build"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-tools": "0.0.1-rc.1",
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}

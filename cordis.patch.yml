@@ -1,0 +1,49 @@
+# dsh-audit-trail — DeepSeek Harness bundle patch layer.
+#
+# A *bundle* is an npm package that declares itself in its package.json under a
+# `dsh` field (`dsh.bundle.patch`) and ships a patch file (this one). When a
+# profile lists this bundle, the Loader applies this layer and mounts the
+# plugin by its package name (`name`).
+#
+# The plugin:
+#   - subscribes to the durable `session/event` stream and the live tool
+#     pipeline (`tools/result`, `tools/change`),
+#   - persists redacted audit records to SQLite (WAL) with a hash chain,
+#   - registers four model-facing tools: audit_query / audit_export /
+#     audit_playback / audit_policy.
+#
+# Every field below defaults in code, so leaving `config` unset is safe. To
+# tune ONE profile, override this row (same `id`) from the profile's own
+# cordis.patch.yml. A patch replaces the WHOLE `config` block — repeat every
+# field you want to keep:
+#
+#   - insert:
+#     - id: audit-trail
+#       name: 'dsh-audit-trail'
+#       config:
+#         storage:
+#           path: null            # null => <dshHome>/audit-trail/audit.sqlite
+#                                 #         ($DSH_HOME or ~/.dsh)
+#         redact:
+#           maskSecrets: true
+#           truncateArgs: 512
+#           truncateSummary: 240
+#           truncateDetail: 4096
+#           maxFiles: 16
+#           maxNetwork: 16
+#           extraSecretPatterns: []
+#         rules:
+#           disabledIds: []       # e.g. ['net:plaintext-http']
+#           custom: []            # e.g. [{ id: 'my:drop', severity: 'critical',
+#                                 #          pattern: 'DROP\\s+TABLE\\s+\\w+', scope: 'args' }]
+#         capture:
+#           chunks: false         # per-token assistant/chunk capture
+#           turnEvents: true
+#           stepEvents: true
+#           toolDispatch: true
+#           toolRegistered: true
+#
+# Full reference: README.md (English) / README.zh.md (中文).
+- insert:
+  - id: audit-trail
+    name: 'dsh-audit-trail'
